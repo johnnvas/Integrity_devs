@@ -5,10 +5,17 @@ const path = require('path'); //Allows you to control the paths of the files
 //The server is listening on port 8081
 const port  = 8081;
 
-const server = http.createServer((req, res) => {
+const server = http.createServer(async (req, res) => {
+  const ext = path.extname(req.url); //Extracts the extension of the file (.jpg, .png, .css, etc)
+  let content = await readFile('stock_tracker.html'); //Reads the index.html file
+  let style = await readFile('../public/css/style.css'); //Reads the style.css file
+  if (ext === '.css') { //If the file is a css file
+    res.setHeader('Content-Type', 'text/css'); //Sets the content type to css
+  }
+  console.log(ext, 'HEREEE')
   res.statusCode = 200;
   res.setHeader('Content-Type', 'text/html');
-  res.end('I have stuff');
+  res.end(content);
 });
 
 
