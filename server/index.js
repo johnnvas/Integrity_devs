@@ -1,20 +1,74 @@
 const http = require('http');
 const { readFile } = require('fs').promises; //Lets you read the local files
 const path = require('path'); //Allows you to control the paths of the files
+const axios = require('axios'); //Allows you to make requests to other servers
 
 //The server is listening on port 8081
 const port  = 8081;
 
 const server = http.createServer(async (req, res) => {
+
   const ext = path.extname(req.url); //Extracts the extension of the file (.jpg, .png, .css, etc)
-  let content = await readFile('stock_tracker.html'); //Reads the index.html file
-  let style = await readFile('../public/css/style.css'); //Reads the style.css file
-  if (ext === '.css') { //If the file is a css file
+  let content; //creates variable to be sent back to the client
+
+  if (req.method === "GET") {
+
+    // const res = await axios.get('https://cloud.iexapis.com/')
+    // const res = await axios.get('https://cloud.iexapis.com/v1/stock/AAPL/quote?token=pk_0c0d5f645efc478fae0a127a9b14b729')
+    // console.log(res.data, 'DATAAAAAAA')
+    // res.setHeader('Content-Type', 'text/css'); //Sets the content type to css
+
+  } else if (req.method === "POST") { //If the request is a POST request, do something
+
+    const axRes = await axios.get('https://sandbox.iexapis.com/stable/stock/AAPL/quote?token=Tpk_1910a3d3a22949f3a4028f154d4dba16')
+
+    let companyName = axRes.data.companyName;
+    let iexOpen = axRes.data.iexOpen;
+    let iexCurrent = axRes.data.iexRealtimePrice;
+
+    console.log(companyName, iexOpen, iexCurrent, 'DATAAAAAAA')
+
+    let formData = ''; //Extracts the data from the form
+    for await (let chunk of req) {
+      formData += chunk;
+    }
+
+    const inputs = formData.split('&')
+      .map(input => input.split('=')) //Splits the data into an array of inputs
+      .map(([key, value]) => ([key, value.replace(/\+/g, ' ')])) //Maps to fix the spaces and characters
+      .map(([key, value]) => ([key, decodeURIComponent(value)])) //Decodes the characters
+      .reduce((acc, [key, value]) => {
+        acc[key] = value;
+        return acc;
+      }, {}); //Reduces the array to a single object
+
+       //Reads the html file
+      content = await readFile('./stock_tracker.html');
+
+
+    for (let [key, value] of Object.entries(inputs)) {
+      content += `<p>Stock: ${companyName} <br/> Current Price is: ${iexCurrent}</p>`;
+    };
+    // content += `<a href="/">Go back</a>`;
+
+
+    res.setHeader('Content-Type', 'text/html'); // ALWAYS SEND THE HEADER
+
+  } else if (ext === '.css') { //If the file is a css file
+
+    content = await readFile('../public/css/style.css'); //Reads the style.css file
     res.setHeader('Content-Type', 'text/css'); //Sets the content type to css
+
+  } else {
+    //Reads the html file
+    content = await readFile('./stock_tracker.html');
+
+    //Sets the content type to html
+    res.setHeader('Content-Type', 'text/html');
   }
-  console.log(ext, 'HEREEE')
+
   res.statusCode = 200;
-  res.setHeader('Content-Type', 'text/html');
+
   res.end(content);
 });
 
