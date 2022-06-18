@@ -4,7 +4,17 @@ const path = require('path'); //Allows you to control the paths of the files
 const axios = require('axios'); //Allows you to make requests to other servers
 
 //The server is listening on port 8081
-const port  = 8081;
+const port = 8081;
+
+class State {
+  constructor() {
+    this.data = {};
+  }
+  add(obj) {
+    this.data[obj[0]] = [companyName, iexOpen, iexCurrent]
+    console.log(obj, 'THIS THE OBJECT CLASS')
+  }
+}
 
 const server = http.createServer(async (req, res) => {
 
@@ -20,13 +30,6 @@ const server = http.createServer(async (req, res) => {
 
   } else if (req.method === "POST") { //If the request is a POST request, do something
 
-    const axRes = await axios.get('https://sandbox.iexapis.com/stable/stock/AAPL/quote?token=Tpk_1910a3d3a22949f3a4028f154d4dba16')
-
-    let companyName = axRes.data.companyName;
-    let iexOpen = axRes.data.iexOpen;
-    let iexCurrent = axRes.data.iexRealtimePrice;
-
-    console.log(companyName, iexOpen, iexCurrent, 'DATAAAAAAA')
 
     let formData = ''; //Extracts the data from the form
     for await (let chunk of req) {
@@ -34,34 +37,51 @@ const server = http.createServer(async (req, res) => {
     }
 
     const inputs = formData.split('&')
-      .map(input => input.split('=')) //Splits the data into an array of inputs
-      .map(([key, value]) => ([key, value.replace(/\+/g, ' ')])) //Maps to fix the spaces and characters
-      .map(([key, value]) => ([key, decodeURIComponent(value)])) //Decodes the characters
-      .reduce((acc, [key, value]) => {
-        acc[key] = value;
-        return acc;
-      }, {}); //Reduces the array to a single object
+    .map(input => input.split('=')) //Splits the data into an array of inputs
+    .map(([key, value]) => ([key, value.replace(/\+/g, ' ')])) //Maps to fix the spaces and characters
+    .map(([key, value]) => ([key, decodeURIComponent(value)])) //Decodes the characters
+    .reduce((acc, [key, value]) => {
+      acc[key] = value;
+      return acc;
+    }, {}); //Reduces the array to a single object
 
        //Reads the html file
-      content = await readFile('./stock_tracker.html');
 
 
-    for (let [key, value] of Object.entries(inputs)) {
-      content += `<p>Stock: ${companyName} <br/> Current Price is: ${iexCurrent}</p>`;
-    };
-    // content += `<a href="/">Go back</a>`;
+       let symbol;
 
+       for (let [key, value] of Object.entries(inputs)) {
+         content += `<p>Stock: ${value} <br/></p>`;
+         symbol = value
+      };
+
+    const axRes = await axios.get(`https://sandbox.iexapis.com/stable/stock/${symbol}/quote?token=Tpk_1910a3d3a22949f3a4028f154d4dba16`)
+    const dataArr = {};
+
+    let companyName = axRes.data.companyName;
+    let iexOpen = axRes.data.iexOpen;
+    let iexCurrent = axRes.data.iexRealtimePrice;
+
+    // console.log(companyName, iexOpen, iexCurrent, 'DATAAAAAAA')
+
+    const state = new State();
+
+    state.add(dataArr[axRes.data.symbol] = [companyName, iexOpen, iexCurrent]);
+
+      // console.log(dataArr, 'DATA ARRAYYY')
+
+    content = await readFile('../../frontend/stock_tracker.html');
 
     res.setHeader('Content-Type', 'text/html'); // ALWAYS SEND THE HEADER
 
   } else if (ext === '.css') { //If the file is a css file
 
-    content = await readFile('../public/css/style.css'); //Reads the style.css file
+    content = await readFile('../../frontend/css/style.css'); //Reads the style.css file
     res.setHeader('Content-Type', 'text/css'); //Sets the content type to css
 
   } else {
     //Reads the html file
-    content = await readFile('./stock_tracker.html');
+    content = await readFile('../../frontend/stock_tracker.html');
 
     //Sets the content type to html
     res.setHeader('Content-Type', 'text/html');
