@@ -1,5 +1,26 @@
 {
   "devDependencies": {
     "nodemon": "^2.0.16"
-  }
+  },
+  "dependencies": {
+    "node-fetch": "^3.2.6"
+  },
+  "name": "integrity_devs",
+  "description": "",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/johnnvas/integrity_devs.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/johnnvas/integrity_devs/issues"
+  },
+  "homepage": "https://github.com/johnnvas/integrity_devs#readme"
 }
