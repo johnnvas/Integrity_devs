@@ -49,13 +49,10 @@ const server = http.createServer(async (req, res) => {
     const current = body.iexRealtimePrice;
     const symbol = body.symbol;
     // const lastestPrice = body.latestPrice;
-    // console.log(
-    //   companyName,
-    //   prev,
-    //   current,
-    //   logoBody.url,
-    //   "THIS IS THE FETCH DATAAAA"
-    // );
+    console.log(
+      body,
+      "THIS IS THE FETCH DATAAAA"
+    );
 
     // const state = new State();
 
@@ -74,7 +71,7 @@ const server = http.createServer(async (req, res) => {
     // }
 
     const arrow = "&#x25B2;";
-    
+
     content = `
      <link rel="stylesheet" type="text/css" href="../public/css/style.css" />
       <div class="container">
