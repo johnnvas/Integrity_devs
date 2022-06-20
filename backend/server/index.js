@@ -1,11 +1,13 @@
 const http = require("http");
+const https = require("https");
+const fs = require("fs");
 const { readFile } = require("fs").promises; //Lets you read the local files
 const path = require("path"); //Allows you to control the paths of the files
-const request= require("./requests"); //Allows you to make requests to the API
+const bigRequest = require("./requests"); //Allows you to make requests to the API
+const fetch = require("node-fetch"); //Allows you to make requests to the API
+// const stock_info = document.getElementById("stock_info"); //Allows you to get the stock info
 
 const axios = require("axios"); //Allows you to make requests to other servers
-
-
 
 //The server is listening on port 8081
 const port = 8081;
@@ -34,12 +36,23 @@ const server = http.createServer(async (req, res) => {
 
   if (req.method === "GET" && path.basename(req.url)[0] === "?") {
     //If the request is a GET request, do something
-
-    const dataArr = [];
-    request(input);
-    console.log(request.value, "THIS IS THE REQUEST funcccc");
-
-
+    const logo = await fetch(
+      `https://sandbox.iexapis.com/stable/stock/${input}/logo?token=Tpk_1910a3d3a22949f3a4028f154d4dba16`
+    );
+    const response = await fetch(
+      `https://sandbox.iexapis.com/stable/stock/${input}/quote?token=Tpk_1910a3d3a22949f3a4028f154d4dba16`
+    );
+    const body = await response.json();
+    const logoBody = await logo.json();
+    const companyName = body.companyName;
+    const prev = body.iexLastUpdated;
+    const current = body.iexRealtimePrice;
+    const symbol = body.symbol;
+    // const lastestPrice = body.latestPrice;
+    console.log(
+      body,
+      "THIS IS THE FETCH DATAAAA"
+    );
 
     // const state = new State();
 
@@ -47,15 +60,36 @@ const server = http.createServer(async (req, res) => {
 
     // console.log(dataArr, 'DATA ARRAYYY')
 
-    content = await readFile("../../frontend/stock_tracker.html");
+    // content = await readFile("../../frontend/stock_tracker.html");
 
+    // if (current > prev) {
+    //   const arrow = "&#x25BC;";
+    //   const color = "red";
+    // } else if (current < prev) {
+    //   const arrow = "&#x25B2;";
+    //   const color = "green";
+    // }
+
+    const arrow = "&#x25B2;";
+
+    content = `
+     <link rel="stylesheet" type="text/css" href="../public/css/style.css" />
+      <div class="container">
+          <img src=${logoBody.url} alt="logo" width="100" height="100">
+          <div class='result'><span id='span'>${companyName}</span>|<span id='span' style="color:green">${current}${arrow}</span>|<a href="/"><button class='backbtn'>Back</button></a</div>
+      </div>
+          `;
+    res.setHeader("Content-Type", "text/css");
+    res.setHeader('Content-Type', 'image/png');
     res.setHeader("Content-Type", "text/html"); // ALWAYS SEND THE HEADER
+    // res.setHeader('Content-Type', 'image/jpeg'); // ALWAYS SEND THE HEADER
   } else if (ext === ".css") {
     //If the file is a css file
 
     content = await readFile("../../frontend/css/style.css"); //Reads the style.css file
     res.setHeader("Content-Type", "text/css"); //Sets the content type to css
-  } else {
+  }
+  else {
     //Reads the html file
     content = await readFile("../../frontend/stock_tracker.html");
 

@@ -6,13 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Integrity Stock</title>
     <link rel="stylesheet" type="text/css" href="../public/css/style.css" />
-    <!-- <script src="./app.js"></script> -->
+    <script src="../backend/server/index.js"></script>
   </head>
   <body>
-    <h1>Integrity Stock</h1>
-    <form action="/" method="get">
+    <h1 class="header">Integrity Stock</h1>
+    <form action="/" method="get" class="input">
       <input name="stock_symbol" id="search" placeholder="Stock Symbol" />
-      <input type="submit"></input>
+      <button id="input_submit">Search</button>
     </form>
+    <div id="stock_info"></div>
   </body>
 </html>
