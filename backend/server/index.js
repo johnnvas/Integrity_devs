@@ -48,11 +48,11 @@ const server = http.createServer(async (req, res) => {
     const prev = body.iexLastUpdated;
     const current = body.iexRealtimePrice;
     const symbol = body.symbol;
-    // const lastestPrice = body.latestPrice;
-    console.log(
-      body,
-      "THIS IS THE FETCH DATAAAA"
-    );
+    const latestPrice = body.latestPrice;
+    // console.log(
+    //   body,
+    //   "THIS IS THE FETCH DATAAAA"
+    // );
 
     // const state = new State();
 
@@ -61,21 +61,23 @@ const server = http.createServer(async (req, res) => {
     // console.log(dataArr, 'DATA ARRAYYY')
 
     // content = await readFile("../../frontend/stock_tracker.html");
+    let arrow;
+    let color;
 
-    // if (current > prev) {
-    //   const arrow = "&#x25BC;";
-    //   const color = "red";
-    // } else if (current < prev) {
-    //   const arrow = "&#x25B2;";
-    //   const color = "green";
-    // }
+    if (current > latestPrice) {
+      arrow = "&#x25BC;";
+      color = "red";
+    } else if (current < latestPrice) {
+      arrow = "&#x25B2;";
+      color = "green";
+    }
 
-    const arrow = "&#x25B2;";
+
 
     // <link rel="stylesheet" type="text/css" href="../public/css/style.css" />
     //  <div class="container">
-    //      <img src=${logoBody.url} alt="logo" width="100" height="100">
-    //      <div class='result'><span id='span'>${companyName}</span>|<span id='span' style="color:green">${current}${arrow}</span>|<a href="/"><button class='backbtn'>Back</button></a</div>
+    //      <img src=${logoBody.url} alt="logo" width="80" height="80">
+    //      <div class='result'><span id='span'>${companyName}</span>|<span id='span' style="color:${color}">${current}${arrow}</span>|<a href="/"><button class='backbtn'>Delete</button></a</div>
     //  </div>
     content = `
     <!DOCTYPE html>
@@ -96,15 +98,15 @@ const server = http.createServer(async (req, res) => {
      </form>
      <div class="container">
          <img src=${logoBody.url} alt="logo" width="80" height="80">
-         <div class='result'><span id='span'>${companyName}</span>|<span id='span' style="color:green">${current}${arrow}</span>|<a href="/"><button class='backbtn'>Delete</button></a</div>
+         <div class='result'><span id='span'>${companyName}</span>|<span id='span' style="color:${color}">${current}${arrow}</span>|<a href="/"><button class='backbtn'>Delete</button></a</div>
      </div>
   </body>
 </html>
 
 
           `;
-    res.setHeader("Content-Type", "text/css");
     res.setHeader('Content-Type', 'image/png');
+    res.setHeader("Content-Type", "text/css");
     res.setHeader("Content-Type", "text/html"); // ALWAYS SEND THE HEADER
     // res.setHeader('Content-Type', 'image/jpeg'); // ALWAYS SEND THE HEADER
   } else if (ext === ".css") {
