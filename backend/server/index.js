@@ -72,12 +72,36 @@ const server = http.createServer(async (req, res) => {
 
     const arrow = "&#x25B2;";
 
+    // <link rel="stylesheet" type="text/css" href="../public/css/style.css" />
+    //  <div class="container">
+    //      <img src=${logoBody.url} alt="logo" width="100" height="100">
+    //      <div class='result'><span id='span'>${companyName}</span>|<span id='span' style="color:green">${current}${arrow}</span>|<a href="/"><button class='backbtn'>Back</button></a</div>
+    //  </div>
     content = `
+    <!DOCTYPE html>
+     <html lang="en">
+     <head>
+     <meta charset="UTF-8" />
+     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+     <title>Integrity Stock</title>
      <link rel="stylesheet" type="text/css" href="../public/css/style.css" />
-      <div class="container">
-          <img src=${logoBody.url} alt="logo" width="100" height="100">
-          <div class='result'><span id='span'>${companyName}</span>|<span id='span' style="color:green">${current}${arrow}</span>|<a href="/"><button class='backbtn'>Back</button></a</div>
-      </div>
+     <script src="../backend/server/index.js"></script>
+     </head>
+     <body>
+     <h1 class="header">Integrity Stock</h1>
+     <form action="/" method="get" class="input">
+     <input name="stock_symbol" id="search" placeholder="Stock Symbol" />
+     <button id="input_submit">Search</button>
+     </form>
+     <div class="container">
+         <img src=${logoBody.url} alt="logo" width="100" height="100">
+         <div class='result'><span id='span'>${companyName}</span>|<span id='span' style="color:green">${current}${arrow}</span>|<a href="/"><button class='backbtn'>Delete</button></a</div>
+     </div>
+  </body>
+</html>
+
+
           `;
     res.setHeader("Content-Type", "text/css");
     res.setHeader('Content-Type', 'image/png');
