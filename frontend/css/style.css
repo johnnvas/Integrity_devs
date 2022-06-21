@@ -19,6 +19,7 @@ body{
 
 #search {
   width: 100%;
+  height: 25px;
   border-radius: 50px;
   padding: 20px 30px;
   font-size: 25px;
@@ -34,11 +35,11 @@ body{
 
 #input_submit {
   position: absolute;
-  width: 63px;
+  width: 68px;
   height: 50px;
   margin: 12px;
-  border-radius: 50px;
-  right: 0px;
+  border-radius: 13px;
+  right: -90px;
   border: none;
   font-size: 15px;
   background-color: #2f74c0;

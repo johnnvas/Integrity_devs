@@ -89,13 +89,13 @@ const server = http.createServer(async (req, res) => {
      <script src="../backend/server/index.js"></script>
      </head>
      <body>
-     <h1 class="header">Integrity Stock</h1>
+     <h1 class="header">Integrity Stock: </h1>
      <form action="/" method="get" class="input">
      <input name="stock_symbol" id="search" placeholder="Stock Symbol" />
-     <button id="input_submit">Search</button>
+     <button id="input_submit">Agregar</button>
      </form>
      <div class="container">
-         <img src=${logoBody.url} alt="logo" width="100" height="100">
+         <img src=${logoBody.url} alt="logo" width="80" height="80">
          <div class='result'><span id='span'>${companyName}</span>|<span id='span' style="color:green">${current}${arrow}</span>|<a href="/"><button class='backbtn'>Delete</button></a</div>
      </div>
   </body>
